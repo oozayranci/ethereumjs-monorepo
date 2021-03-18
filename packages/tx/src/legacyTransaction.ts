@@ -16,6 +16,8 @@ import { BaseTransaction } from './baseTransaction'
  * An Ethereum non-typed (legacy) transaction
  */
 export default class Transaction extends BaseTransaction<Transaction> {
+  public readonly gasPrice: BN
+
   get transactionType(): number {
     return 0
   }
@@ -96,7 +98,9 @@ export default class Transaction extends BaseTransaction<Transaction> {
   public constructor(txData: TxData, opts: TxOptions = {}) {
     super(txData, opts)
 
-    this._validateCannotExceedMaxInteger({ r: this.r, s: this.s })
+    this.gasPrice = new BN(toBuffer(txData.gasPrice))
+
+    this._validateCannotExceedMaxInteger({ r: this.r, s: this.s, gasPrice: this.gasPrice })
 
     this._validateTxV(this.v)
 
